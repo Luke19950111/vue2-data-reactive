@@ -4,7 +4,7 @@
   "description": "vue2 响应式原理",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server",
+    "dev": "webpack-dev-server --mode development",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "lk",
