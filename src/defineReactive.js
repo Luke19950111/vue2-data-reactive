@@ -1,6 +1,11 @@
 import observe from './observe.js'
+import Dep from './Dep.js'
  export default function defineReactive (data, key, val) {
   console.log('defineReactive', key)
+  
+  // defineReactive 闭包中的 dep，和 Observer 实例中的 dep 不是同一个
+  const dep = new Dep()
+
   if (arguments.length == 2) {
     val = data[key]
   }
@@ -12,6 +17,15 @@ import observe from './observe.js'
     enumerable: true,
     configurable: true,
     get() {
+
+      // 如果处于依赖收集阶段
+      if (Dep.target) {
+        dep.depend()
+        if (childOb) {
+          childOb.dep.depend()
+        }
+      }
+
       return val
     },
     set(newValue) {
@@ -21,6 +35,9 @@ import observe from './observe.js'
       val = newValue
       // 当设置了新值，新值也要被 observe，新值可能也是一个对象
       childOb = observe(newValue)
+
+      // 发布订阅模式，触发 set 是通知
+      dep.notify()
     }
   })
  }

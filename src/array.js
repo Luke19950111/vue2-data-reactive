@@ -29,7 +29,7 @@ methodsNeedChange.forEach(methodName => {
   def(arrayMethods, methodName, function () {
     
     // 最外层传入 observe 的 data 一定是对象，第一次遍历 data 对象时给所有的第一层根属性都调用了 observe，所以数组上一定有 __ob__
-    const ob = this.__ob__
+    const ob = this.__ob__ // this 就是调用方法的数组
     // push、unshift、splice 能够插入新元素，要把插入的新元素也 observe
     const args = [...arguments]
     let inserted = []
@@ -48,6 +48,9 @@ methodsNeedChange.forEach(methodName => {
 
     console.log(`调用改写后的数组方法${methodName}`)
     const result = original.apply(this, arguments) // this 就是调用方法的数组
+
+    ob.dep.notify()
+
     return result
   }, false)
 })
